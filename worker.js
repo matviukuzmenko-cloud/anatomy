@@ -495,7 +495,8 @@ async function diagnosePlantImage(apiKey, image) {
 }
 function isAllowedOrigin(origin, configuredOrigin) {
   if (!origin) return true;
-  if ([configuredOrigin, "https://matviukuzmenko-cloud.github.io"].includes(origin)) return true;
+  const configuredSiteOrigin = configuredOrigin ? new URL(configuredOrigin).origin : "";
+  if ([configuredSiteOrigin, "https://matviukuzmenko-cloud.github.io"].includes(origin)) return true;
   return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 }
 
@@ -707,7 +708,7 @@ async function sendCareReminders(env) {
       const response = await sendWebPush(env, subscription, {
         title: "Пора проверить растения",
         body: `Проверьте почву: ${due.slice(0, 4).map((plan) => plan.name).join(", ")}${due.length > 4 ? ` и ещё ${due.length - 4}` : ""}.`,
-        url: `${env.SITE_ORIGIN || "https://flora-anotomy.work.gd"}/#garden`,
+        url: `${env.SITE_ORIGIN || "https://matviukuzmenko-cloud.github.io/flora-anotomy"}/#garden`,
       });
       if (response.status === 404 || response.status === 410) {
         const deleteQuery = new URLSearchParams({
